@@ -1,0 +1,13 @@
+services:
+  mock-server:
+    build: ./server
+    container_name: inji-mock-server
+    ports:
+      - "4000:4000"
+    volumes:
+      - server_data:/app
+    environment:
+      - NODE_ENV=production
+volumes:
+  server_data:
+    driver: local

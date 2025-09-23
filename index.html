@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>INJI Verifiables</title>
+    <style>
+      :root {
+        --bg: #0f1115; --surface: #191d28; --text: #e6e9ef; --muted: #a7b0c0;
+        --accent: #7ab8ff; --accent-strong: #4c82ff; --radius: 12px;
+        --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px;
+        --shadow: 0 10px 30px rgba(0,0,0,.35);
+      }
+      * { box-sizing: border-box } html, body { height: 100% }
+      body {
+        margin: 0; font-family: Inter, ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        background: radial-gradient(1000px 600px at 70% -10%, #1a2030 0%, transparent 60%), var(--bg);
+        color: var(--text); line-height: 1.5;
+      }
+      a { color: inherit; text-decoration: none } .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-5) }
+
+      header { position: sticky; top:0; z-index: 20; backdrop-filter: saturate(140%) blur(8px); background: rgba(15,17,21,.65); border-bottom: 1px solid rgba(255,255,255,.06) }
+      .nav { display: flex; align-items: center; justify-content: space-between; height: 64px }
+      .brand { display: flex; align-items: center; gap: var(--space-3); font-weight: 600 }
+      .brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 24px var(--accent) }
+      .links { display: flex; gap: var(--space-5) } .links a { color: var(--muted); padding: 8px 0; position: relative }
+      .links a.active, .links a:hover { color: var(--text) }
+      .links a.active::after, .links a:hover::after { content:""; position:absolute; left:0; right:0; bottom:-12px; height:2px; background: var(--accent) }
+      .cta { padding: 10px 14px; border-radius: 10px; background: linear-gradient(180deg, var(--accent), var(--accent-strong)); color: #0b1020; font-weight: 600; border: none; box-shadow: var(--shadow) }
+
+      .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: var(--space-6); align-items: center; padding: 64px 0 24px }
+      .hero h1 { font-size: clamp(28px, 3.8vw, 52px); margin: 0 0 var(--space-4) } .lead { color: var(--muted); max-width: 56ch; margin-bottom: var(--space-5) }
+      .panel { background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.08); border-radius: var(--radius); padding: var(--space-6); box-shadow: var(--shadow) }
+
+      #viewer-panel { padding: var(--space-4) } #viewer { width: 100%; height: 420px; border-radius: 10px; display: block; border: 1px solid rgba(255,255,255,.08); background: radial-gradient(600px 300px at 50% 10%, #1b2233 0%, #0f1115 70%) }
+
+      .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); padding: 56px 0 }
+      .card { background: var(--surface); border: 1px solid rgba(255,255,255,.08); border-radius: var(--radius); padding: var(--space-5) }
+      .card h3 { margin: 0 0 var(--space-3) } .card p { color: var(--muted); margin: 0 }
+
+      footer { color: var(--muted); padding: 32px 0; border-top: 1px solid rgba(255,255,255,.06) }
+
+      @media (max-width: 960px) { .hero { grid-template-columns: 1fr } .cards { grid-template-columns: 1fr } .links { display: none } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <div class="brand"><span class="brand-dot"></span>INJI Verifiables</div>
+        <nav class="links">
+          <a href="#" class="active">Home</a><a href="#product">Product</a><a href="#pricing">Pricing</a><a href="#support">Support</a>
+        </nav>
+        <button class="cta">Get SDK</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div>
+          <h1>Verify any SDK verifiable. Instantly, on‑chain or off.</h1>
+          <p class="lead">A developer‑first verification engine for INJI verifiables with proofs, fast APIs, and full audit trails.</p>
+          <div style="display:flex; gap:12px;"><button class="cta">Start Free</button><a href="#product" style="padding:10px 14px; border:1px solid rgba(255,255,255,.16); border-radius:10px;">See Product</a></div>
+        </div>
+        <div id="viewer-panel" class="panel">
+          <canvas id="viewer" aria-label="3D verification scene"></canvas>
+          <div style="display:flex; gap:12px; margin-top:12px; color:var(--muted); align-items:center;">
+            <span>3D: rotate, pan, zoom</span><span style="width:6px; height:6px; background:var(--accent); border-radius:50%; box-shadow:0 0 16px var(--accent)"></span>
+          </div>
+        </div>
+      </section>
+
+      <section id="product" class="cards">
+        <div class="card"><h3>SDK adapters</h3><p>Drop‑in providers with consistent verify() semantics and structured results.</p></div>
+        <div class="card"><h3>Proof pipelines</h3><p>Signature, schema, revocation checks with detailed traces for audits.</p></div>
+        <div class="card"><h3>Edge‑ready</h3><p>WASM‑powered verification for ultra‑low latency in the browser.</p></div>
+      </section>
+
+      <section id="pricing" class="panel">
+        <h2 style="margin-top:0;">Pricing</h2><p class="lead">Simple usage‑based plans with a generous free tier.</p>
+      </section>
+
+      <section id="support" class="panel" style="margin:24px 0 56px;">
+        <h2 style="margin-top:0;">Support</h2><p class="lead">Docs, examples, SDK references, and priority channels.</p>
+      </section>
+    </main>
+
+    <footer class="container"><small>© 2025 INJI Verifiables</small></footer>
+
+    <!-- Babylon.js via CDN -->
+    <script type="module">
+      import * as BABYLON from 'https://cdn.babylonjs.com/babylon.js';
+      import 'https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js';
+
+      const canvas = document.getElementById('viewer');
+      const engine = new BABYLON.Engine(canvas, true, { antialias: true });
+
+      function createScene() {
+        const scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+
+        const camera = new BABYLON.ArcRotateCamera('cam', Math.PI/4, Math.PI/3, 5, BABYLON.Vector3.Zero(), scene);
+        camera.attachControl(canvas, true);
+        camera.lowerRadiusLimit = 1.2; camera.upperRadiusLimit = 8;
+
+        const hdrTex = BABYLON.CubeTexture.CreateFromPrefilteredData('https://assets.babylonjs.com/environments/environmentSpecular.env', scene);
+        scene.environmentTexture = hdrTex;
+        scene.createDefaultSkybox(hdrTex, true, 1000, 0.5);
+
+        const light = new BABYLON.HemisphericLight('h', new BABYLON.Vector3(0, 1, 0), scene);
+        light.intensity = 0.9;
+
+        const mat = new BABYLON.PBRMaterial('mat', scene);
+        mat.metallic = 1.0; mat.roughness = 0.25; mat.albedoColor = new BABYLON.Color3(0.49, 0.72, 1.0);
+
+        const mesh = BABYLON.MeshBuilder.CreateSphere('s', { diameter: 1.4, segments: 64 }, scene);
+        mesh.material = mat;
+
+        const ground = BABYLON.MeshBuilder.CreateGround('g', { width: 8, height: 8 }, scene);
+        const gmat = new BABYLON.PBRMaterial('gmat', scene);
+        gmat.metallic = 0.2; gmat.roughness = 0.9; gmat.albedoColor = new BABYLON.Color3(0.09, 0.1, 0.14);
+        ground.material = gmat; ground.position.y = -0.8;
+
+        scene.onBeforeRenderObservable.add(() => { mesh.rotation.y += engine.getDeltaTime() * 0.0006; });
+
+        return scene;
+      }
+
+      const scene = createScene();
+      engine.runRenderLoop(() => { scene.render(); });
+      window.addEventListener('resize', () => engine.resize());
+
+      // Load a GLB model from /public/models (Cursor dev server serves this path):
+      // BABYLON.SceneLoader.Append('/models/', 'inji-badge.glb', scene, () => {
+      //   // Optional: center/scale
+      //   // const root = scene.getMeshByName('inji-badge');
+      // });
+    </script>
+  </body>
+</html>

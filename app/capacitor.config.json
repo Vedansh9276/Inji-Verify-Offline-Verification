@@ -1,0 +1,6 @@
+{
+  "appId": "io.example.injiofflineverifier",
+  "appName": "inji-offline-verifier",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

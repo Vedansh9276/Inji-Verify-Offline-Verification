@@ -1,0 +1,5 @@
+{
+  "issuers": [
+    { "id": "did:example:issuer1", "name": "Example Issuer 1" }
+  ]
+}
