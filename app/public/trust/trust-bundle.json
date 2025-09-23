@@ -1,0 +1,129 @@
+{
+  "issuers": [
+    {
+      "id": "did:mosip:issuer:gov",
+      "name": "MOSIP Government Issuer",
+      "publicKeys": [
+        {
+          "id": "did:mosip:issuer:gov#key-1",
+          "type": "Ed25519",
+          "publicKey": "mock-ed25519-public-key-gov",
+          "algorithm": "EdDSA",
+          "expiresAt": 1735689600000,
+          "revoked": false
+        }
+      ],
+      "metadata": {
+        "verificationMethod": "did:mosip:issuer:gov#key-1",
+        "assertionMethod": "did:mosip:issuer:gov#key-1",
+        "supportedProofTypes": ["Ed25519Signature2020", "RsaSignature2018"]
+      },
+      "lastUpdated": 1704067200000
+    },
+    {
+      "id": "did:mosip:issuer:health",
+      "name": "MOSIP Health Issuer",
+      "publicKeys": [
+        {
+          "id": "did:mosip:issuer:health#key-1",
+          "type": "RSA",
+          "publicKey": "mock-rsa-public-key-health",
+          "algorithm": "RS256",
+          "expiresAt": 1711929600000,
+          "revoked": false
+        }
+      ],
+      "metadata": {
+        "verificationMethod": "did:mosip:issuer:health#key-1",
+        "assertionMethod": "did:mosip:issuer:health#key-1",
+        "supportedProofTypes": ["RsaSignature2018", "Ed25519Signature2020"]
+      },
+      "lastUpdated": 1704067200000
+    },
+    {
+      "id": "did:mosip:issuer:education",
+      "name": "MOSIP Education Issuer",
+      "publicKeys": [
+        {
+          "id": "did:mosip:issuer:education#key-1",
+          "type": "Ed25519",
+          "publicKey": "mock-ed25519-public-key-education",
+          "algorithm": "EdDSA",
+          "expiresAt": 1735689600000,
+          "revoked": false
+        }
+      ],
+      "metadata": {
+        "verificationMethod": "did:mosip:issuer:education#key-1",
+        "assertionMethod": "did:mosip:issuer:education#key-1",
+        "supportedProofTypes": ["Ed25519Signature2020"]
+      },
+      "lastUpdated": 1704067200000
+    }
+  ],
+  "revocationLists": [
+    {
+      "issuerId": "did:mosip:issuer:gov",
+      "revokedCredentials": [],
+      "lastUpdated": 1704067200000,
+      "nextUpdate": 1704672000000,
+      "signature": "mock-revocation-signature-gov"
+    },
+    {
+      "issuerId": "did:mosip:issuer:health",
+      "revokedCredentials": [],
+      "lastUpdated": 1704067200000,
+      "nextUpdate": 1704672000000,
+      "signature": "mock-revocation-signature-health"
+    },
+    {
+      "issuerId": "did:mosip:issuer:education",
+      "revokedCredentials": [],
+      "lastUpdated": 1704067200000,
+      "nextUpdate": 1704672000000,
+      "signature": "mock-revocation-signature-education"
+    }
+  ],
+  "schemas": [
+    {
+      "type": "VerifiableCredential",
+      "schema": "https://www.w3.org/2018/credentials/v1"
+    },
+    {
+      "type": "MOSIPCredential",
+      "schema": "https://mosip.io/credentials/v1"
+    },
+    {
+      "type": "MOSIPIdentityCredential",
+      "schema": "https://mosip.io/credentials/identity/v1"
+    },
+    {
+      "type": "MOSIPHealthCredential",
+      "schema": "https://mosip.io/credentials/health/v1"
+    },
+    {
+      "type": "MOSIPEducationCredential",
+      "schema": "https://mosip.io/credentials/education/v1"
+    }
+  ],
+  "contexts": [
+    {
+      "@context": "https://www.w3.org/2018/credentials/v1"
+    },
+    {
+      "@context": "https://mosip.io/credentials/v1"
+    },
+    {
+      "@context": "https://mosip.io/credentials/identity/v1"
+    },
+    {
+      "@context": "https://mosip.io/credentials/health/v1"
+    },
+    {
+      "@context": "https://mosip.io/credentials/education/v1"
+    }
+  ],
+  "version": "1.0.0",
+  "expiresAt": 1735689600000,
+  "signature": "mock-trust-bundle-signature"
+}

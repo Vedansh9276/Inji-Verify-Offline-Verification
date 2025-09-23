@@ -7,6 +7,7 @@ import { syncLogs } from './lib/sync'
 import { getSettings, saveSettings, type AppSettings } from './lib/settings'
 import { stopBackgroundSync, updateConnectivityStatus } from './lib/background-sync'
 import { exportToCSV, exportToJSON } from './lib/export'
+import BLEVerification from './components/BLEVerification'
 
 function App() {
   const videoRef = useRef<HTMLVideoElement | null>(null)
@@ -19,6 +20,8 @@ function App() {
   const [showSettings, setShowSettings] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | 'success' | 'failure'>('all')
+  const [verificationMode, setVerificationMode] = useState<'qr' | 'ble'>('qr')
+  const [deviceRole, setDeviceRole] = useState<'wallet' | 'verifier'>('verifier')
 
   const refreshLogs = async () => setLogs(await allLogs())
 
@@ -119,6 +122,24 @@ function App() {
     return matchesSearch && matchesStatus
   })
 
+  const handleBLEVerificationComplete = async (result: any) => {
+    const outcome = {
+      status: result.success ? 'success' as const : 'failure' as const,
+      message: result.success ? 'BLE verification successful' : result.errors.join(', '),
+      hash: `ble-${Date.now()}`,
+      details: result
+    }
+    
+    setLastResult(outcome)
+    await addLog({ 
+      vcHash: outcome.hash, 
+      status: outcome.status, 
+      details: outcome.details, 
+      timestamp: Date.now() 
+    })
+    await refreshLogs()
+  }
+
   const updateSetting = async (key: keyof AppSettings, value: any) => {
     if (!settings) return
     const updated = { ...settings, [key]: value }
@@ -134,11 +155,34 @@ function App() {
       <p>Status: {online ? 'Online' : 'Offline'} | Auto-sync: {settings.autoSync ? 'ON' : 'OFF'}</p>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-        {!scanning ? (
-          <button onClick={startScan} disabled={busy}>Start Scan</button>
-        ) : (
-          <button onClick={stopScan}>Stop Scan</button>
+        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+          <label>Mode:</label>
+          <select value={verificationMode} onChange={e => setVerificationMode(e.target.value as any)}>
+            <option value="qr">QR Code</option>
+            <option value="ble">BLE Verification</option>
+          </select>
+        </div>
+        
+        {verificationMode === 'qr' && (
+          <>
+            {!scanning ? (
+              <button onClick={startScan} disabled={busy}>Start Scan</button>
+            ) : (
+              <button onClick={stopScan}>Stop Scan</button>
+            )}
+          </>
         )}
+        
+        {verificationMode === 'ble' && (
+          <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+            <label>Role:</label>
+            <select value={deviceRole} onChange={e => setDeviceRole(e.target.value as any)}>
+              <option value="verifier">Verifier</option>
+              <option value="wallet">Wallet</option>
+            </select>
+          </div>
+        )}
+        
         <button onClick={onSync} disabled={busy}>Sync Now</button>
         <button onClick={onExport} disabled={busy}>Export JSON</button>
         <button onClick={onExportCSV} disabled={busy}>Export CSV</button>
@@ -187,10 +231,19 @@ function App() {
         </div>
       )}
 
-      <div style={{ border: '1px solid #ddd', borderRadius: 8, padding: 8, marginBottom: 16 }}>
-        <h3>Camera</h3>
-        <video ref={videoRef} playsInline style={{ width: '100%', borderRadius: 8 }} />
-      </div>
+      {verificationMode === 'qr' && (
+        <div style={{ border: '1px solid #ddd', borderRadius: 8, padding: 8, marginBottom: 16 }}>
+          <h3>Camera</h3>
+          <video ref={videoRef} playsInline style={{ width: '100%', borderRadius: 8 }} />
+        </div>
+      )}
+
+      {verificationMode === 'ble' && (
+        <BLEVerification 
+          deviceRole={deviceRole}
+          onVerificationComplete={handleBLEVerificationComplete}
+        />
+      )}
 
       <div style={{ border: '1px solid #ddd', borderRadius: 8, padding: 8, marginBottom: 16 }}>
         <h3>Last Result</h3>
