@@ -4,8 +4,9 @@ import { scanOnce, resetScanner } from './lib/scanner'
 import { verifyVCOffline } from './lib/verify'
 import { addLog, allLogs } from './lib/db'
 import { syncLogs } from './lib/sync'
-
-const DEFAULT_ENDPOINT = import.meta.env.VITE_SYNC_ENDPOINT || 'http://localhost:4000'
+import { getSettings, saveSettings, type AppSettings } from './lib/settings'
+import { stopBackgroundSync, updateConnectivityStatus } from './lib/background-sync'
+import { exportToCSV, exportToJSON } from './lib/export'
 
 function App() {
   const videoRef = useRef<HTMLVideoElement | null>(null)
@@ -13,20 +14,38 @@ function App() {
   const [lastResult, setLastResult] = useState<null | { status: 'success' | 'failure'; message: string }>(null)
   const [online, setOnline] = useState(navigator.onLine)
   const [logs, setLogs] = useState<any[]>([])
-  const [endpoint, setEndpoint] = useState<string>(DEFAULT_ENDPOINT)
+  const [settings, setSettings] = useState<AppSettings | null>(null)
   const [busy, setBusy] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'success' | 'failure'>('all')
 
   const refreshLogs = async () => setLogs(await allLogs())
 
   useEffect(() => {
-    const onOnline = () => setOnline(true)
-    const onOffline = () => setOnline(false)
+    const loadSettings = async () => {
+      const s = await getSettings()
+      setSettings(s)
+    }
+    loadSettings()
+
+    const onOnline = () => {
+      setOnline(true)
+      updateConnectivityStatus(true)
+    }
+    const onOffline = () => {
+      setOnline(false)
+      updateConnectivityStatus(false)
+    }
+    
     window.addEventListener('online', onOnline)
     window.addEventListener('offline', onOffline)
     refreshLogs()
+    
     return () => {
       window.removeEventListener('online', onOnline)
       window.removeEventListener('offline', onOffline)
+      stopBackgroundSync()
     }
   }, [])
 
@@ -67,9 +86,10 @@ function App() {
   }
 
   const onSync = async () => {
+    if (!settings) return
     try {
       setBusy(true)
-      const res = await syncLogs(endpoint)
+      const res = await syncLogs(settings.syncEndpoint)
       setLastResult({ status: 'success', message: `Synced ${res.uploaded} logs` })
       await refreshLogs()
     } catch (e: any) {
@@ -81,19 +101,37 @@ function App() {
 
   const onExport = async () => {
     const data = await allLogs()
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `logs-${new Date().toISOString()}.json`
-    a.click()
-    URL.revokeObjectURL(url)
+    const timestamp = new Date().toISOString().split('T')[0]
+    exportToJSON(data, `logs-${timestamp}.json`)
   }
+
+  const onExportCSV = async () => {
+    const data = await allLogs()
+    const timestamp = new Date().toISOString().split('T')[0]
+    exportToCSV(data, `logs-${timestamp}.csv`)
+  }
+
+  const filteredLogs = logs.filter(log => {
+    const matchesSearch = !searchTerm || 
+      log.vcHash.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      log.status.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = statusFilter === 'all' || log.status === statusFilter
+    return matchesSearch && matchesStatus
+  })
+
+  const updateSetting = async (key: keyof AppSettings, value: any) => {
+    if (!settings) return
+    const updated = { ...settings, [key]: value }
+    await saveSettings({ [key]: value })
+    setSettings(updated)
+  }
+
+  if (!settings) return <div>Loading...</div>
 
   return (
     <div style={{ maxWidth: 720, margin: '0 auto', padding: 16 }}>
       <h1>INJI Offline Verifier</h1>
-      <p>Status: {online ? 'Online' : 'Offline'}</p>
+      <p>Status: {online ? 'Online' : 'Offline'} | Auto-sync: {settings.autoSync ? 'ON' : 'OFF'}</p>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
         {!scanning ? (
@@ -102,9 +140,52 @@ function App() {
           <button onClick={stopScan}>Stop Scan</button>
         )}
         <button onClick={onSync} disabled={busy}>Sync Now</button>
-        <button onClick={onExport} disabled={busy}>Export Logs</button>
-        <input style={{ flex: 1, minWidth: 240 }} value={endpoint} onChange={e => setEndpoint(e.target.value)} placeholder="Sync endpoint" />
+        <button onClick={onExport} disabled={busy}>Export JSON</button>
+        <button onClick={onExportCSV} disabled={busy}>Export CSV</button>
+        <button onClick={() => setShowSettings(!showSettings)}>Settings</button>
       </div>
+
+      {showSettings && (
+        <div style={{ border: '1px solid #ddd', borderRadius: 8, padding: 8, marginBottom: 16 }}>
+          <h3>Settings</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <label>
+              Sync Endpoint:
+              <input 
+                style={{ width: '100%', marginLeft: 8 }} 
+                value={settings.syncEndpoint} 
+                onChange={e => updateSetting('syncEndpoint', e.target.value)} 
+              />
+            </label>
+            <label>
+              <input 
+                type="checkbox" 
+                checked={settings.wifiOnlySync} 
+                onChange={e => updateSetting('wifiOnlySync', e.target.checked)} 
+              />
+              WiFi-only sync
+            </label>
+            <label>
+              <input 
+                type="checkbox" 
+                checked={settings.autoSync} 
+                onChange={e => updateSetting('autoSync', e.target.checked)} 
+              />
+              Auto-sync when online
+            </label>
+            <label>
+              Sync Interval (minutes):
+              <input 
+                type="number" 
+                min="1" 
+                max="60" 
+                value={settings.syncInterval} 
+                onChange={e => updateSetting('syncInterval', parseInt(e.target.value))} 
+              />
+            </label>
+          </div>
+        </div>
+      )}
 
       <div style={{ border: '1px solid #ddd', borderRadius: 8, padding: 8, marginBottom: 16 }}>
         <h3>Camera</h3>
@@ -124,7 +205,25 @@ function App() {
       </div>
 
       <div style={{ border: '1px solid #ddd', borderRadius: 8, padding: 8 }}>
-        <h3>Logs</h3>
+        <h3>Logs ({filteredLogs.length}/{logs.length})</h3>
+        
+        <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
+          <input 
+            style={{ flex: 1, minWidth: 200 }} 
+            placeholder="Search logs..." 
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+          />
+          <select 
+            value={statusFilter} 
+            onChange={e => setStatusFilter(e.target.value as any)}
+          >
+            <option value="all">All Status</option>
+            <option value="success">Success Only</option>
+            <option value="failure">Failure Only</option>
+          </select>
+        </div>
+        
         <div style={{ maxHeight: 240, overflow: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
@@ -132,18 +231,20 @@ function App() {
                 <th style={{ textAlign: 'left' }}>Time</th>
                 <th style={{ textAlign: 'left' }}>Hash</th>
                 <th style={{ textAlign: 'left' }}>Status</th>
+                <th style={{ textAlign: 'left' }}>Synced</th>
               </tr>
             </thead>
             <tbody>
-              {logs.map((l) => (
+              {filteredLogs.map((l) => (
                 <tr key={l.id}>
                   <td>{new Date(l.timestamp).toLocaleString()}</td>
                   <td>{l.vcHash}</td>
                   <td>{l.status}</td>
+                  <td>{l.synced ? '✓' : '✗'}</td>
                 </tr>
               ))}
-              {!logs.length && (
-                <tr><td colSpan={3}>No logs yet.</td></tr>
+              {!filteredLogs.length && (
+                <tr><td colSpan={4}>No logs match your filters.</td></tr>
               )}
             </tbody>
           </table>
