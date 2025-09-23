@@ -1,7 +1,118 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">inji-offline-verifier</string>
-    <string name="title_activity_main">inji-offline-verifier</string>
-    <string name="package_name">io.example.injiofflineverifier</string>
-    <string name="custom_url_scheme">io.example.injiofflineverifier</string>
+    <!-- App Strings -->
+    <string name="app_name">INJI Verify</string>
+    <string name="app_tagline">Offline Identity Verification</string>
+    
+    <!-- Main Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_scan">Scan</string>
+    <string name="nav_ble">BLE</string>
+    <string name="nav_logs">Logs</string>
+    <string name="nav_settings">Settings</string>
+    
+    <!-- Verification Modes -->
+    <string name="mode_qr">QR Code</string>
+    <string name="mode_ble">Bluetooth</string>
+    <string name="mode_manual">Manual</string>
+    
+    <!-- BLE Roles -->
+    <string name="role_wallet">Wallet</string>
+    <string name="role_verifier">Verifier</string>
+    
+    <!-- Status Messages -->
+    <string name="status_ready">Ready to Verify</string>
+    <string name="status_scanning">Scanning...</string>
+    <string name="status_verifying">Verifying...</string>
+    <string name="status_success">Verification Successful</string>
+    <string name="status_failed">Verification Failed</string>
+    <string name="status_offline">Offline Mode</string>
+    <string name="status_online">Online Mode</string>
+    
+    <!-- BLE Status -->
+    <string name="ble_advertising">Advertising VC...</string>
+    <string name="ble_scanning">Scanning for VCs...</string>
+    <string name="ble_connected">Connected</string>
+    <string name="ble_disconnected">Disconnected</string>
+    <string name="ble_error">Connection Error</string>
+    
+    <!-- Actions -->
+    <string name="action_scan">Start Scan</string>
+    <string name="action_stop">Stop</string>
+    <string name="action_verify">Verify</string>
+    <string name="action_share">Share</string>
+    <string name="action_export">Export</string>
+    <string name="action_sync">Sync</string>
+    <string name="action_retry">Retry</string>
+    
+    <!-- Verification Steps -->
+    <string name="step_format">Format Check</string>
+    <string name="step_signature">Signature Verification</string>
+    <string name="step_issuer">Issuer Trust</string>
+    <string name="step_expiry">Expiry Check</string>
+    <string name="step_face">Face Match</string>
+    <string name="step_revocation">Revocation Check</string>
+    
+    <!-- Face Matching -->
+    <string name="face_match_enabled">Face Matching Enabled</string>
+    <string name="face_match_disabled">Face Matching Disabled</string>
+    <string name="face_match_success">Face Match: %1$d%%</string>
+    <string name="face_match_failed">Face Match Failed</string>
+    <string name="face_capture">Capture Face</string>
+    
+    <!-- Settings -->
+    <string name="settings_sync">Sync Settings</string>
+    <string name="settings_ble">Bluetooth Settings</string>
+    <string name="settings_security">Security</string>
+    <string name="settings_about">About</string>
+    
+    <string name="setting_auto_sync">Auto Sync</string>
+    <string name="setting_wifi_only">WiFi Only</string>
+    <string name="setting_sync_interval">Sync Interval</string>
+    <string name="setting_endpoint">Sync Endpoint</string>
+    
+    <!-- Trust Management -->
+    <string name="trust_bundle_loaded">Trust Bundle Loaded</string>
+    <string name="trust_bundle_expired">Trust Bundle Expired</string>
+    <string name="trust_bundle_invalid">Invalid Trust Bundle</string>
+    <string name="issuer_trusted">Trusted Issuer</string>
+    <string name="issuer_untrusted">Untrusted Issuer</string>
+    
+    <!-- Logs -->
+    <string name="logs_empty">No verification logs yet</string>
+    <string name="logs_count">%1$d logs</string>
+    <string name="logs_synced">Synced</string>
+    <string name="logs_pending">Pending</string>
+    <string name="logs_filter">Filter Logs</string>
+    <string name="logs_search">Search...</string>
+    
+    <!-- Errors -->
+    <string name="error_camera_permission">Camera permission required</string>
+    <string name="error_bluetooth_permission">Bluetooth permission required</string>
+    <string name="error_network">Network error</string>
+    <string name="error_invalid_qr">Invalid QR code</string>
+    <string name="error_verification_failed">Verification failed</string>
+    <string name="error_trust_bundle">Trust bundle error</string>
+    
+    <!-- Success Messages -->
+    <string name="success_verification">Credential verified successfully!</string>
+    <string name="success_sync">Data synced successfully</string>
+    <string name="success_export">Logs exported successfully</string>
+    
+    <!-- Accessibility -->
+    <string name="accessibility_scan_button">Start QR code scanning</string>
+    <string name="accessibility_ble_button">Start Bluetooth verification</string>
+    <string name="accessibility_status">Current verification status</string>
+    <string name="accessibility_logs">Verification logs list</string>
+    
+    <!-- Content Descriptions -->
+    <string name="cd_logo">INJI Verify Logo</string>
+    <string name="cd_qr_code">QR Code</string>
+    <string name="cd_bluetooth">Bluetooth</string>
+    <string name="cd_camera">Camera</string>
+    <string name="cd_face">Face</string>
+    <string name="cd_checkmark">Checkmark</string>
+    <string name="cd_cross">Cross</string>
+    <string name="cd_warning">Warning</string>
+    <string name="cd_info">Information</string>
 </resources>
