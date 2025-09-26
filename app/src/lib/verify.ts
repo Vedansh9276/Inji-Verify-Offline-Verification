@@ -40,9 +40,27 @@ export async function verifyVCOffline(qrPayload: string): Promise<VerifyOutcome>
     revocationUrl: '/trust/revocation.json',
   })
 
+  // Enhanced verification with MOSIP patterns
   const result: any = await injiVerify(sanitizedPayload, trust)
   const ok = !!(result?.ok ?? result?.valid ?? result?.verified)
   const reason = result?.reason || (ok ? 'Verified' : 'Not verified')
+
+  // Additional MOSIP-specific checks
+  if (ok) {
+    const vc = JSON.parse(sanitizedPayload)
+    const proofType = vc.proof?.type
+    
+    // Check supported proof types from MOSIP
+    const supportedProofs = ['RsaSignature2018', 'Ed25519Signature2018', 'Ed25519Signature2020']
+    if (proofType && !supportedProofs.includes(proofType)) {
+      return {
+        status: 'failure',
+        message: `Unsupported proof type: ${proofType}`,
+        hash,
+        details: result,
+      }
+    }
+  }
 
   return {
     status: ok ? 'success' : 'failure',

@@ -21,6 +21,46 @@
       "lastUpdated": 1704067200000
     },
     {
+      "id": "https://vharsh.github.io/DID/mock-controller.json",
+      "name": "MOSIP Test Issuer",
+      "publicKeys": [
+        {
+          "id": "https://vharsh.github.io/DID/mock-public-key.json",
+          "type": "RSA",
+          "publicKey": "mock-rsa-public-key-test",
+          "algorithm": "RS256",
+          "expiresAt": 1735689600000,
+          "revoked": false
+        }
+      ],
+      "metadata": {
+        "verificationMethod": "https://vharsh.github.io/DID/mock-public-key.json",
+        "assertionMethod": "https://vharsh.github.io/DID/mock-public-key.json",
+        "supportedProofTypes": ["RsaSignature2018"]
+      },
+      "lastUpdated": 1704067200000
+    },
+    {
+      "id": "did:web:vharsh.github.io:DID:local",
+      "name": "MOSIP Ed25519 Test Issuer",
+      "publicKeys": [
+        {
+          "id": "did:web:vharsh.github.io:DID:local#key-0",
+          "type": "Ed25519",
+          "publicKey": "mock-ed25519-public-key-test",
+          "algorithm": "EdDSA",
+          "expiresAt": 1735689600000,
+          "revoked": false
+        }
+      ],
+      "metadata": {
+        "verificationMethod": "did:web:vharsh.github.io:DID:local#key-0",
+        "assertionMethod": "did:web:vharsh.github.io:DID:local#key-0",
+        "supportedProofTypes": ["Ed25519Signature2018"]
+      },
+      "lastUpdated": 1704067200000
+    },
+    {
       "id": "did:mosip:issuer:health",
       "name": "MOSIP Health Issuer",
       "publicKeys": [
