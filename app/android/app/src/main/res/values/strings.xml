@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- App Strings -->
-    <string name="app_name">INJI Verify</string>
+    <string name="app_name">MOSIP Verify</string>
     <string name="app_tagline">Offline Identity Verification</string>
     
     <!-- Main Navigation -->
@@ -106,7 +106,7 @@
     <string name="accessibility_logs">Verification logs list</string>
     
     <!-- Content Descriptions -->
-    <string name="cd_logo">INJI Verify Logo</string>
+    <string name="cd_logo">MOSIP Verify Logo</string>
     <string name="cd_qr_code">QR Code</string>
     <string name="cd_bluetooth">Bluetooth</string>
     <string name="cd_camera">Camera</string>
@@ -115,4 +115,8 @@
     <string name="cd_cross">Cross</string>
     <string name="cd_warning">Warning</string>
     <string name="cd_info">Information</string>
+    
+    <!-- MOSIP Branding -->
+    <string name="mosip_powered_by">Powered by MOSIP</string>
+    <string name="mosip_tagline">Modular Open Source Identity Platform</string>
 </resources>
